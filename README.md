@@ -22,9 +22,9 @@ Lingkungan ini digunakan untuk mensimulasikan aktivitas serangan terhadap aplika
 
 Target adalah server web yang menjalankan layanan yang sengaja memiliki celah untuk didemonstrasikan:
 
-- **Apache2 + PHP (port 80)** → potensi SQL Injection, XSS, file upload
+- **Node JS (port 80)** → potensi DDos, Xss
 - **OpenSSH (port 22)** → potensi brute-force & user enumeration
-- **MySQL (port 3306)** → potensi brute-force kredensial / misconfig autentikasi
+- **RTSP (554)** → potensi brute-force akses
 
 Alur serangan diharapkan dari **Attacker → Target**, sementara seluruh lalu lintas dipantau oleh **Monitoring Node (Security Onion)** untuk mendeteksi aktivitas mencurigakan (port scan, login berulang, anomali HTTP).
 
