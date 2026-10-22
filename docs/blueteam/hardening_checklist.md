@@ -27,7 +27,6 @@ Waktu pada screenshot target menggunakan **UTC**.
 | Membatasi akses SSH ke user `kel6` (`AllowUsers kel6`) | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) |
 | Menonaktifkan X11 forwarding | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) — nilai berasal dari drop-in SSH (lihat Catatan 1). |
 | Mengaktifkan Fail2ban untuk SSH | Sebagian | [Sebelum](evidence/sebelum-2-fail2ban.png) · [Konfigurasi](evidence/sesudah-2a-konfigurasi-fail2ban.png) · [Status](evidence/sesudah-2b-status-fail2ban.png) · [Uji 6 kali gagal](evidence/sesudah-9a-bruteforce.png) |
-| Mengganti password akun `kel6` yang masih menggunakan password awal `123` | Belum | Bukti belum tersedia. |
 
 ## B. Service & Attack Surface
 
