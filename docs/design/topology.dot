@@ -1,0 +1,14 @@
+digraph topology {
+  graph [rankdir=LR, bgcolor="white", fontname="Helvetica", pad=0.4, nodesep=0.5, ranksep=0.8];
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin=0.18];
+  edge [fontname="Helvetica", fontsize=9];
+
+  attacker [label="Attacker Node\nKali Linux 2026.2\n192.168.6.10", fillcolor="#f8d7da", color="#b02a37"];
+  switch   [label="Internal Network\nsiber-kel6\n192.168.6.0/24", shape=ellipse, fillcolor="#e2e3e5", color="#6c757d"];
+  target   [label="Target Node\nUbuntu Server 26.04\n192.168.6.20\nNode.js :80 | SSH :22 | RTSP :554", fillcolor="#d1e7dd", color="#146c43"];
+  so       [label="Monitoring Node\nSecurity Onion\n192.168.6.30", fillcolor="#cfe2ff", color="#084298"];
+
+  attacker -> switch [label="attack traffic", color="#b02a37"];
+  target   -> switch [label="service traffic", color="#146c43"];
+  switch   -> so     [label="SPAN / port mirror", style=dashed, color="#084298"];
+}
