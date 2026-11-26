@@ -112,8 +112,8 @@ Purple Team Loop menerapkan siklus iteratif lima tahap:
 * **Tahap 4 — Mitigation & Hardening:**
   1. Membatasi permission berkas database pada level filesystem:
      ```bash
-     chmod 640 /home/kel6/smartcow/data/smartcow.db*
-     chown kel6:kel6 /home/kel6/smartcow/data/smartcow.db*
+     chmod 640 /home/kel6/SmartCow/local/data/smartcow.db*
+     chown kel6:kel6 /home/kel6/SmartCow/local/data/smartcow.db*
      ```
      Bukti: [`sesudah-18a-izin-db.png`](blueteam/evidence/sesudah-18a-izin-db.png).
   2. Menambahkan filter route pada Express.js untuk menolak segala akses ke ekstensi database dan path traversal, mengembalikan status `404 Not Found`.

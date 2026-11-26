@@ -233,9 +233,9 @@ Mengacu siklus Tahap 4 Purple Team Loop, Blue Team segera menerapkan langkah pen
    ```
 5. **Filesystem DAC Permission Tightening:**
    ```bash
-   chmod 640 /home/kel6/smartcow/app.js /home/kel6/smartcow/mediamtx.yml
-   chmod 640 /home/kel6/smartcow/data/smartcow.db*
-   chown -R kel6:kel6 /home/kel6/smartcow/
+   chmod 640 /opt/kel6-target/app.js /opt/mediamtx/mediamtx.yml
+   chmod 640 /home/kel6/SmartCow/local/data/smartcow.db*
+   chown -R kel6:kel6 /opt/kel6-target/ /home/kel6/SmartCow/local/data/
    ```
 
 ---

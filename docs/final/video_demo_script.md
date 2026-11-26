@@ -69,10 +69,11 @@ Sesuai ketentuan Bagian VI Panduan Final PBL, rekaman video wajib menunjukkan na
 * **Perintah Pengujian di Kali Linux:**
   ```bash
   curl -I http://192.168.6.20/smartcow.db
+  curl -I http://192.168.6.20/local/data/smartcow.db
   ```
 * **Perintah Cek di Target Server:**
   ```bash
-  ls -l /home/kel6/smartcow/data/smartcow.db
+  ls -l /home/kel6/SmartCow/local/data/smartcow.db
   ```
 * **Naskah Narasi (Voice-Over):**
   > *"Skenario kedua, ATK-02: Information Disclosure pada basis data SQLite.*  
@@ -139,7 +140,7 @@ Sesuai ketentuan Bagian VI Panduan Final PBL, rekaman video wajib menunjukkan na
 * **Tampilan Visual:** Terminal Target Server (`target-kel6`).
 * **Perintah Cek di Target Server:**
   ```bash
-  ls -l /home/kel6/smartcow/app.js /home/kel6/smartcow/mediamtx.yml /home/kel6/smartcow/data/smartcow.db
+  ls -l /opt/kel6-target/app.js /opt/mediamtx/mediamtx.yml /home/kel6/SmartCow/local/data/smartcow.db
   ```
 * **Naskah Narasi (Voice-Over):**
   > *"Skenario keenam, ATK-06: Privilege Abuse & Configuration Tampering.*  
@@ -194,8 +195,8 @@ sudo ufw status verbose
 # 3. Bukti ATK-04 (Status Fail2ban SSH)
 fail2ban-client status sshd
 
-# 4. Bukti ATK-06 (Izin Berkas Kritis 640)
-ls -l /home/kel6/smartcow/app.js /home/kel6/smartcow/mediamtx.yml /home/kel6/smartcow/data/smartcow.db
+# 4. Bukti ATK-06 & ATK-02 (Izin Berkas Kritis 640)
+ls -l /opt/kel6-target/app.js /opt/mediamtx/mediamtx.yml /home/kel6/SmartCow/local/data/smartcow.db*
 ```
 
 ### 3.3 Tampilan di Monitoring Node (Security Onion `192.168.6.30`)
