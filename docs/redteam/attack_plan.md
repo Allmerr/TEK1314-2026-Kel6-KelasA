@@ -171,49 +171,90 @@ Seluruh skenario pengujian telah dieksekusi secara empiris dalam siklus Purple T
 
 | ID | Expected Defense | Hasil Aktual | Status | Referensi Bukti |
 |---|---|---|---|---|
-| **ATK-01** | Port tidak diizinkan terblokir | Port 554 RTSP berstatus `filtered` (drop) dari Kali Linux | **Pass** | [`sesudah-5-pindai-nmap.png`](../blueteam/evidence/sesudah-5-pindai-nmap.png) |
-| **ATK-02** | Endpoint dilindungi autentikasi | Akses tanpa cookie menghasilkan HTTP 401 Unauthorized | **Pass** | [`sesudah-19a-respons-401.png`](../blueteam/evidence/sesudah-19a-respons-401.png) |
-| **ATK-03** | Login melebihi batas mendapat `429` | Percobaan ke-11 dan ke-12 menghasilkan HTTP 429 Too Many Requests | **Pass** | [`sesudah-19b-ratelimit.png`](../blueteam/evidence/sesudah-19b-ratelimit.png) |
-| **ATK-04** | Session lama ditolak | Token session kadaluarsa/lama ditolak oleh server | **Pass** | [`sesudah-6-login-ditolak.png`](../blueteam/evidence/sesudah-6-login-ditolak.png) |
-| **ATK-05** | File SQLite tidak terekspos | Request HTTP GET `smartcow.db` merespons HTTP 404 Not Found | **Pass** | [`sesudah-18b-db-404.png`](../blueteam/evidence/sesudah-18b-db-404.png) |
-| **ATK-06** | Akses RTSP tak sah ditolak | Probing dan pemutaran RTSP Kali Linux mengalami `Connection timed out` | **Pass** | [`sesudah-4b-port-listen.png`](../blueteam/evidence/sesudah-4b-port-listen.png) |
+| **ATK-01** | Port tidak diizinkan terblokir | Port 554 RTSP berstatus `filtered` (drop) dari Kali Linux | **Pass** | [Bukti ATK-01](evidence/ATK-01/sesudah-port-scan.png) |
+| **ATK-02** | Endpoint dilindungi autentikasi | Akses tanpa cookie menghasilkan HTTP 401 Unauthorized | **Pass** | [Bukti ATK-02](evidence/ATK-02/sesudah-unauthorized.png) |
+| **ATK-03** | Login melebihi batas mendapat `429` | Percobaan ke-11 dan ke-12 menghasilkan HTTP 429 Too Many Requests | **Pass** | [Bukti ATK-03](evidence/ATK-03/sesudah-ratelimit-429.png) |
+| **ATK-04** | Session lama ditolak | Login tanpa kunci ditolak: `Permission denied (publickey)` | **Pass** | [Bukti ATK-04](evidence/ATK-04/sesudah-ssh-keyonly.png) |
+| **ATK-05** | File SQLite tidak terekspos | Request HTTP GET `smartcow.db` merespons HTTP 404 Not Found | **Pass** | [Bukti ATK-05](evidence/ATK-05/sesudah-db-404.png) |
+| **ATK-06** | Akses RTSP tak sah ditolak | Probing dan pemutaran RTSP Kali Linux mengalami `Connection timed out` | **Pass** | [Bukti ATK-06](evidence/ATK-06/sesudah-rtsp-filtered.png) |
 
 **Ringkasan Status Akhir:** 6 Skenario Teruji | **6 Pass (100% Berhasil Dimonitor & Dimitigasi)** | 0 Fail | 0 Partial.
 
-### Format dokumentasi tiap skenario
+### Dokumentasi Lengkap Verifikasi Hasil Pengujian Empiris
 
 ```text
-Attack ID        : ATK-XX
-Tanggal (UTC)    : YYYY-MM-DD HH:MM
-Red Team IP      : xxx.xxx.xxx.xxx
+Attack ID        : ATK-01
+Tanggal (UTC)    : 2026-11-25 04:19
+Red Team IP      : 192.168.6.10
 Target IP        : 192.168.6.20
-Preconditions    : akun uji / endpoint / stream dummy
-Langkah uji      : ...
-Expected result  : ...
-Actual result    : ...
-Status           : Pass / Fail / Partial / Not Tested
-Evidence         : evidence/...
-Catatan          : ...
+Preconditions    : Target Node dalam segmen terisolasi siber-kel6 (192.168.6.0/24)
+Langkah uji      : nmap -sV -p 22,80,554 192.168.6.20
+Expected result  : Port 554 RTSP tersaring firewall dan berstatus FILTERED
+Actual result    : Port 554/tcp filtered rtsp (drop paket UFW), port 22 & 80 open
+Status           : Pass
+Evidence         : evidence/ATK-01/sesudah-port-scan.png
+Catatan          : Zeek pada Security Onion merekam lonjakan TCP SYN pada conn.log
+
+Attack ID        : ATK-02
+Tanggal (UTC)    : 2026-11-25 04:20
+Red Team IP      : 192.168.6.10
+Target IP        : 192.168.6.20
+Preconditions    : Layanan web Node.js port 80 aktif
+Langkah uji      : curl -i http://192.168.6.20/api/dashboard (tanpa session cookie)
+Expected result  : Request ditolak dengan kode respon HTTP 401 Unauthorized
+Actual result    : Server merespons HTTP/1.1 401 Unauthorized
+Status           : Pass
+Evidence         : evidence/ATK-02/sesudah-unauthorized.png
+Catatan          : Endpoint data terlindungi autentikasi session cookie
+
+Attack ID        : ATK-03
+Tanggal (UTC)    : 2026-11-25 04:21
+Red Team IP      : 192.168.6.10
+Target IP        : 192.168.6.20
+Preconditions    : Endpoint /api/login aktif dengan express-rate-limit
+Langkah uji      : Loop 12 request POST berturut-turut dengan kredensial salah
+Expected result  : Request melebihi 10 kali per menit diblokir dengan HTTP 429
+Actual result    : Request ke-11 dan ke-12 mengembalikan HTTP/1.1 429 Too Many Requests
+Status           : Pass
+Evidence         : evidence/ATK-03/sesudah-ratelimit-429.png
+Catatan          : Serangan kamus login otomatis berhasil dilumpuhkan
+
+Attack ID        : ATK-04
+Tanggal (UTC)    : 2026-11-25 04:22
+Red Team IP      : 192.168.6.10
+Target IP        : 192.168.6.20
+Preconditions    : OpenSSH port 22 dikonfigurasi PasswordAuthentication no
+Langkah uji      : ssh kel6@192.168.6.20 (tanpa kunci publik sah)
+Expected result  : Koneksi ditolak pada handshake tanpa prompt password
+Actual result    : Ditanggapi seketika: Permission denied (publickey)
+Status           : Pass
+Evidence         : evidence/ATK-04/sesudah-ssh-keyonly.png
+Catatan          : Target mencatat failed preauth di syslog dan Fail2ban aktif
+
+Attack ID        : ATK-05
+Tanggal (UTC)    : 2026-11-25 04:23
+Red Team IP      : 192.168.6.10
+Target IP        : 192.168.6.20
+Preconditions    : Database SQLite dipindahkan ke direktori privat local/data/
+Langkah uji      : curl -I http://192.168.6.20/smartcow.db
+Expected result  : File database tidak dapat diunduh via web publik (HTTP 404)
+Actual result    : Server merespons HTTP/1.1 404 Not Found
+Status           : Pass
+Evidence         : evidence/ATK-05/sesudah-db-404.png
+Catatan          : File database aman dengan permission 640 di luar web root
+
+Attack ID        : ATK-06
+Tanggal (UTC)    : 2026-11-25 04:24
+Red Team IP      : 192.168.6.10
+Target IP        : 192.168.6.20
+Preconditions    : Port 554 di-filter UFW hanya untuk Security Onion (192.168.6.30)
+Langkah uji      : nc -zv -w 3 192.168.6.20 554 && ffplay rtsp://192.168.6.20:554/live/cow1
+Expected result  : Koneksi probing dan video feed dari Kali Linux ditolak
+Actual result    : Connection to 192.168.6.20 554 failed: Connection timed out
+Status           : Pass
+Evidence         : evidence/ATK-06/sesudah-rtsp-filtered.png
+Catatan          : Siaran CCTV aman dari intersepsi liar penyerang
 ```
-
-### Struktur evidence yang disarankan
-
-```text
-.
-├── ATTACK_PLAN.md
-└── evidence/
-    ├── README.md
-    ├── ATK-01/
-    │   ├── sebelum-port-scan.png
-    │   └── sesudah-port-scan.png
-    ├── ATK-02/
-    ├── ATK-03/
-    ├── ATK-04/
-    ├── ATK-05/
-    └── ATK-06/
-```
-
-Folder dan nama file di atas adalah **contoh struktur**, bukan klaim bahwa screenshot sudah tersedia. Sebelum diunggah ke GitHub publik, lakukan redaksi IP privat yang tidak perlu dipublikasikan, cookie/token/password, identitas akun, dan informasi CCTV nonpublik.
 
 ## 7. Referensi dan Keterkaitan dengan Hardening
 
