@@ -53,7 +53,7 @@ Pengujian dilakukan dengan pendekatan **Red Team vs Blue Team** untuk mengidenti
 | **ATK-01** | Port Scanning | Ubuntu Server | Nmap | Mengidentifikasi port/layanan yang bisa dijangkau | UFW memblokir koneksi yang tidak diizinkan |
 | **ATK-02** | Unauthorized Web Access | Website / API monitoring | Browser, `curl`, Burp Suite | Menguji akses endpoint sensitif tanpa autentikasi | `401`, `403`, atau redirect login; tidak ada data sensitif bocor |
 | **ATK-03** | Login Brute-Force Simulation | Login website | Burp Suite / request uji terbatas | Memverifikasi pembatasan percobaan login | HTTP `429 Too Many Requests` sesuai kebijakan rate limit |
-| **ATK-04** | Session Hijacking Simulation | Session aplikasi web | Browser DevTools, Burp Suite | Menguji pemakaian ulang sesi setelah logout/expired | Sesi lama tidak berlaku; akses ditolak |
+| **ATK-04** | SSH Password Brute-Force | Layanan OpenSSH :22 | OpenSSH Client, Hydra | Menguji keamanan akses remote management SSH terhadap tebakan password | Password authentication dinonaktifkan (`PasswordAuthentication no`); hanya public key yang diterima (`Permission denied (publickey)`) |
 | **ATK-05** | Database File Exposure | SQLite melalui HTTP | Browser, `curl` | Memastikan file DB tidak dapat diunduh dari web | `403` / `404`, file DB tidak terekspos |
 | **ATK-06** | Unauthorized RTSP Access | MediaMTX / RTSP | VLC, `ffprobe` | Menguji akses stream anonim dan pembatasan IP | IP tak diizinkan diblokir; klien tanpa izin RTSP ditolak |
 
@@ -107,18 +107,20 @@ Pengujian dilakukan dengan pendekatan **Red Team vs Blue Team** untuk mengidenti
 - **Expected defense:** Request melebihi ambang batas menerima `429 Too Many Requests`.
 - **Bukti:** Riwayat 11 percobaan, status `429`, dan log login/rate-limit. Pastikan rate limiter tidak sudah terpicu **sebelum** uji dimulai.
 
-### ATK-04 — Session Hijacking Simulation
+### ATK-04 — SSH Password Brute-Force & Remote Access Control
 
-- **Tujuan:** Memverifikasi bahwa sesi lama tidak dapat digunakan kembali setelah logout atau expiry.
-- **Tools:** Browser DevTools, Burp Suite.
+- **Tujuan:** Memvalidasi penegakan autentikasi asimetris berbasis kunci publik dan penonaktifan total autentikasi kata sandi pada layanan remote OpenSSH port 22.
+- **Target:** `192.168.6.20:22` (OpenSSH Server).
+- **Tools:** OpenSSH Client (`ssh`), Hydra, Nmap.
 - **Langkah uji:**
-  1. Login dengan akun pengujian sah pada browser di lab.
-  2. Catat identitas sesi **secara lokal** (jangan unggah nilainya ke GitHub).
-  3. Logout dari aplikasi.
-  4. Uji ulang akses endpoint yang dilindungi menggunakan sesi lama dalam konteks pengujian sendiri.
-  5. Ulangi secara terpisah untuk pengujian masa kedaluwarsa sesi jika memungkinkan.
-- **Expected defense:** Sesi yang sudah logout/expired ditolak; atribut cookie `HttpOnly`, `SameSite`, dan `Secure` (saat HTTPS) sesuai desain.
-- **Bukti:** Respons endpoint sebelum logout, sesudah logout, dan atribut cookie **tanpa memperlihatkan nilai rahasia**.
+  1. Dari Kali Linux (`192.168.6.10`), coba lakukan koneksi SSH ke akun `kel6` dan `root` dengan memaksa metode autentikasi password:
+     ```bash
+     ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no kel6@192.168.6.20
+     ```
+  2. Amati apakah server meminta prompt password atau menolak koneksi secara langsung.
+  3. Uji login menggunakan akun `root` untuk memastikan direct root login diblokir (`PermitRootLogin no`).
+- **Expected defense:** Koneksi ditolak seketika oleh daemon SSH dengan pesan `Permission denied (publickey)`; prompt password tidak pernah ditampilkan; upaya brute-force kata sandi gagal secara struktural.
+- **Bukti:** Pesan penolakan terminal Kali Linux, file konfigurasi `/etc/ssh/sshd_config.d/00-hardening.conf`, dan log auth di `/var/log/auth.log` serta Kibana Security Onion.
 
 ### ATK-05 — Database File Exposure
 
@@ -174,7 +176,7 @@ Seluruh skenario pengujian telah dieksekusi secara empiris dalam siklus Purple T
 | **ATK-01** | Port tidak diizinkan terblokir | Port 554 RTSP berstatus `filtered` (drop) dari Kali Linux | **Pass** | [Bukti ATK-01](evidence/ATK-01/sesudah-port-scan.png) |
 | **ATK-02** | Endpoint dilindungi autentikasi | Akses tanpa cookie menghasilkan HTTP 401 Unauthorized | **Pass** | [Bukti ATK-02](evidence/ATK-02/sesudah-unauthorized.png) |
 | **ATK-03** | Login melebihi batas mendapat `429` | Percobaan ke-11 dan ke-12 menghasilkan HTTP 429 Too Many Requests | **Pass** | [Bukti ATK-03](evidence/ATK-03/sesudah-ratelimit-429.png) |
-| **ATK-04** | Session lama ditolak | Login tanpa kunci ditolak: `Permission denied (publickey)` | **Pass** | [Bukti ATK-04](evidence/ATK-04/sesudah-ssh-keyonly.png) |
+| **ATK-04** | Password ditolak (kunci publik wajib) | Login password ditolak: `Permission denied (publickey)` | **Pass** | [Bukti ATK-04](evidence/ATK-04/sesudah-ssh-keyonly.png) |
 | **ATK-05** | File SQLite tidak terekspos | Request HTTP GET `smartcow.db` merespons HTTP 404 Not Found | **Pass** | [Bukti ATK-05](evidence/ATK-05/sesudah-db-404.png) |
 | **ATK-06** | Akses RTSP tak sah ditolak | Probing dan pemutaran RTSP Kali Linux mengalami `Connection timed out` | **Pass** | [Bukti ATK-06](evidence/ATK-06/sesudah-rtsp-filtered.png) |
 
@@ -200,9 +202,9 @@ Tanggal (UTC)    : 2026-11-25 04:20
 Red Team IP      : 192.168.6.10
 Target IP        : 192.168.6.20
 Preconditions    : Layanan web Node.js port 80 aktif
-Langkah uji      : curl -i http://192.168.6.20/api/dashboard (tanpa session cookie)
+Langkah uji      : curl -i http://192.168.6.20/api/me (tanpa session cookie)
 Expected result  : Request ditolak dengan kode respon HTTP 401 Unauthorized
-Actual result    : Server merespons HTTP/1.1 401 Unauthorized
+Actual result    : Server merespons HTTP/1.1 401 Unauthorized ({"error":"Belum masuk."})
 Status           : Pass
 Evidence         : evidence/ATK-02/sesudah-unauthorized.png
 Catatan          : Endpoint data terlindungi autentikasi session cookie
