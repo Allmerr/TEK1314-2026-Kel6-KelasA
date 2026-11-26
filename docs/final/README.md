@@ -1,4 +1,4 @@
-# PANDUAN DAN DOKUMENTASI VIDEO DEMOSTEASI PURPLE TEAM LOOP
+# PANDUAN DAN DOKUMENTASI VIDEO DEMONSTRASI PURPLE TEAM LOOP
 ## Mata Kuliah TEK1314 — Keamanan Siber (PBL Fase 3)
 ### Sistem Monitoring Kandang Sapi Berbasis IoT (Smart Cow Monitoring System)
 **Kelompok 6 — Kelas A | Program Studi D4 Teknologi Rekayasa Komputer, Sekolah Vokasi IPB**
@@ -73,7 +73,7 @@ Demonstrasi video berdurasi **05 menit 01 detik** membuktikan bahwa siklus *Purp
 ## 6. Hubungan dengan Berkas Bukti Digital (Evidence Index)
 
 Tangkapan layar hasil tahapan video ini terarsip lengkap pada folder repositori:
-* Bukti Deteksi Port Scan: `docs/blueteam/evidence/sebelum-3a-pindai-port.png` vs `docs/blueteam/evidence/sesudah-5-pindai-nmap.png`
+* Bukti Deteksi Port Scan: `docs/blueteam/evidence/sebelum-6-pindai-nmap.png` vs `docs/blueteam/evidence/sesudah-5-pindai-nmap.png`
 * Bukti Rate Limiting Web: `docs/blueteam/evidence/sesudah-19b-ratelimit.png`
 * Bukti Penolakan SSH: `docs/blueteam/evidence/sesudah-6-login-ditolak.png`
-* Bukti Log SIEM Kibana: `docs/blueteam/evidence/sesudah-1-kibana-siem.png`
+* Bukti Log SIEM Kibana: `docs/blueteam/evidence/monitoring-baseline-log.png`

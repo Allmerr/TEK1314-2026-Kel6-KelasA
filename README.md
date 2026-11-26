@@ -45,13 +45,15 @@ TEK1314-2026-Kel6-KelasA/
 ├── docs/
 │   ├── design/                         # [FASE 1] Perancangan Lab & Jaringan Awal
 │   │   ├── topology.png                # Diagram topologi jaringan lab 3 node
-│   │   ├── ip_plan.md                  # Tabel alokasi IP dan identitas interface
-│   │   └── README.md                   # Deskripsi skenario awal Fase 1
+│   │   ├── topology.dot                # Sumber diagram Graphviz topologi lab
+│   │   └── ip_plan.md                  # Tabel alokasi IP dan identitas interface
 │   ├── presentation-minggu9/           # [FASE 2] Deklarasi Tech Stack & Kemajuan
-│   │   ├── slides.pdf                  # Slide presentasi evaluasi Minggu 9
+│   │   ├── Progress PBL Fase 1 .pdf    # Slide presentasi evaluasi Minggu 9
+│   │   ├── slides-outline.md           # Outline slide presentasi Minggu 9
 │   │   └── tech_stack_declaration.md   # Pemetaan detail sistem mitra ke replika
 │   ├── redteam/                        # [FASE 2] Dokumen & Skrip Serangan Red Team
-│   │   └── attack-plan.md              # Skenario serangan ATK-01 s/d ATK-06
+│   │   ├── attack-plan.md              # Skenario serangan ATK-01 s/d ATK-06
+│   │   └── evidence/                   # Bukti digital pengujian Red Team (ATK-01 s/d ATK-06)
 │   ├── blueteam/                       # [FASE 2] Hardening & Bukti Forensik Blue Team
 │   │   ├── hardening_checklist.md      # Checklist evaluasi Kategori A, B, C
 │   │   └── evidence/                   # Arsip tangkapan layar empiris (sebelum & sesudah)
@@ -59,6 +61,8 @@ TEK1314-2026-Kel6-KelasA/
 │   ├── final/                          # [FASE 3] Deliverables Final & Incident Report
 │   │   ├── incident_report.pdf         # Laporan Insiden Final standar NIST SP 800-61r2 (PDF)
 │   │   ├── incident_report.md          # Berkas sumber laporan insiden NIST SP 800-61r2
+│   │   ├── video_demo_script.pdf       # Panduan & naskah rekaman video demo (PDF)
+│   │   ├── video_demo_script.md        # Berkas sumber naskah rekaman video demo
 │   │   └── README.md                   # Panduan & tautan video demo Purple Team Loop
 │   └── presentation-final/             # [FASE 3] Slide Presentasi Final (10-12 Slide)
 │       ├── slides.pdf                  # Slide deck presentasi final 16:9 (PDF)

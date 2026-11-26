@@ -25,7 +25,7 @@ Waktu pada screenshot target menggunakan **UTC**.
 | Menonaktifkan password authentication dan mewajibkan SSH key | Selesai | [Sebelum](evidence/sebelum-1-ssh.png) · [Efektif](evidence/sesudah-1b-ssh-efektif.png) · [Login ditolak](evidence/sesudah-6-login-ditolak.png) |
 | Membatasi percobaan autentikasi dengan `MaxAuthTries 3` | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) |
 | Membatasi akses SSH ke user `kel6` (`AllowUsers kel6`) | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) |
-| Menonaktifkan X11 forwarding | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) — nilai berasal dari drop-in SSH (lihat Catatan 1). |
+| Menonaktifkan X11 forwarding | Selesai | [Konfigurasi efektif](evidence/sesudah-1b-ssh-efektif.png) — nilai berasal dari drop-in SSH (lihat [Catatan 1](evidence/README.md#catatan)). |
 | Mengaktifkan Fail2ban untuk SSH | Selesai | [Sebelum](evidence/sebelum-2-fail2ban.png) · [Konfigurasi](evidence/sesudah-2a-konfigurasi-fail2ban.png) · [Status](evidence/sesudah-2b-status-fail2ban.png) · [Uji 6 kali gagal](evidence/sesudah-9a-bruteforce.png) |
 | Mengganti password default awal akun `kel6` dengan kata sandi kuat | Selesai | [Status Penggantian Password](evidence/sesudah-1b-ssh-efektif.png) · Kunci privat Ed25519 aktif |
 
@@ -36,7 +36,7 @@ Waktu pada screenshot target menggunakan **UTC**.
 | Mengaktifkan UFW dengan kebijakan default `deny (incoming)` | Selesai | [Sebelum](evidence/sebelum-3-firewall.png) · [Aturan](evidence/sesudah-3a-aturan-firewall.png) · [Status](evidence/sesudah-3b-status-firewall.png) |
 | Membatasi akses port 22, 80, dan 123 ke `192.168.6.0/24` | Selesai | [Sebelum](evidence/sebelum-4-port.png) · [Port listen](evidence/sesudah-4b-port-listen.png) |
 | Membatasi akses RTSP port 554 hanya dari `192.168.6.30` | Selesai | [Port listen](evidence/sesudah-4b-port-listen.png) · [Status UFW Numbered](evidence/sesudah-3b-status-firewall.png) |
-| Menonaktifkan protokol MediaMTX yang tidak digunakan: RTMP, HLS, WebRTC, SRT, API, metrics, dan playback | Selesai | [Konfigurasi](evidence/sesudah-4a-konfigurasi-mediamtx.png) · [Port listen](evidence/sesudah-4b-port-listen.png) — lihat Catatan 2. |
+| Menonaktifkan protokol MediaMTX yang tidak digunakan: RTMP, HLS, WebRTC, SRT, API, metrics, dan playback | Selesai | [Konfigurasi](evidence/sesudah-4a-konfigurasi-mediamtx.png) · [Port listen](evidence/sesudah-4b-port-listen.png) — lihat [Catatan 2](evidence/README.md#catatan). |
 | Memeriksa dan menerapkan update OS serta paket | Selesai | [Tidak ada pembaruan](evidence/sesudah-8b-tidak-ada-pembaruan.png) |
 
 ## C. Data & Application

@@ -285,12 +285,12 @@ Seluruh dokumen teknis, skrip pengujian, berkas konfigurasi, dan bukti tangkapan
   * Rencana Alokasi IP: [`docs/design/ip_plan.md`](../design/ip_plan.md)
   * Deklarasi Tech Stack: [`docs/presentation-minggu9/tech_stack_declaration.md`](../presentation-minggu9/tech_stack_declaration.md)
 * **Dokumen Pengujian & Mitigasi:**
-  * Attack Plan Red Team: [`docs/redteam/attack_plan.md`](../redteam/attack_plan.md)
+  * Attack Plan Red Team: [`docs/redteam/attack-plan.md`](../redteam/attack-plan.md)
   * Hardening Checklist Blue Team: [`docs/blueteam/hardening_checklist.md`](../blueteam/hardening_checklist.md)
   * Purple Team Log Lengkap: [`docs/purple-team-log.md`](../purple-team-log.md)
   * Direktori Bukti Forensik: [`docs/blueteam/evidence/`](../blueteam/evidence/)
 * **Artefak Final Fase 3:**
   * Incident Report Final (PDF): [`docs/final/incident_report.pdf`](incident_report.pdf)
   * Panduan & Naskah Video Demo (PDF): [`docs/final/video_demo_script.pdf`](video_demo_script.pdf)
-  * Video Demo Purple Team Loop: [`docs/final/video_demo.mp4`](video_demo.mp4) (atau tautan streaming di README)
+  * Panduan & Tautan Video Demo Purple Team Loop: [`docs/final/README.md`](README.md) (tautan streaming eksternal)
   * Slide Presentasi Final (PDF): [`docs/presentation-final/slides.pdf`](../presentation-final/slides.pdf)
