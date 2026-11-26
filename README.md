@@ -83,7 +83,7 @@ TEK1314-2026-Kel6-KelasA/
 ### 3. Fase 3: Forensik, Pelaporan NIST SP 800-61r2 & Artefak Final (Minggu 12–15)
 * Menyusun laporan penanganan insiden komprehensif mengikuti 4 fase formal **NIST SP 800-61 Rev. 2** (Preparation, Detection & Analysis, Containment/Eradication/Recovery, Post-Incident Activity) pada [`docs/final/incident_report.pdf`](docs/final/incident_report.pdf).
 * Memproduksi slide presentasi final format 16:9 sebanyak 12 slide pada [`docs/presentation-final/slides.pdf`](docs/presentation-final/slides.pdf).
-* Merekam dan mendokumentasikan video demonstrasi empiris Purple Team Loop berdurasi 7 menit 15 detik pada [`docs/final/README.md`](docs/final/README.md).
+* Merekam dan mendokumentasikan video demonstrasi empiris Purple Team Loop berdurasi 5 menit 01 detik pada [`docs/final/README.md`](docs/final/README.md).
 
 ---
 
@@ -102,7 +102,7 @@ TEK1314-2026-Kel6-KelasA/
 
 ## 🎥 Video Demonstrasi Purple Team Loop
 
-Sesuai ketentuan, video demonstrasi empiris berdurasi 7 menit 15 detik menunjukkan minimal satu siklus penuh Purple Team Loop dengan identitas IP lab kelompok (`192.168.6.x`):
+Sesuai ketentuan, video demonstrasi empiris berdurasi 5 menit 01 detik menunjukkan siklus Purple Team Loop dengan identitas IP lab kelompok (`192.168.6.x`):
 * **Tautan YouTube (Unlisted):** [https://youtu.be/TEK1314-Kel6-SmartCowDemo](https://youtu.be/TEK1314-Kel6-SmartCowDemo)
 * **Tautan Cadangan Google Drive (Full HD 1080p):** [https://drive.google.com/file/d/1TEK1314_Kel6_SmartCow_PurpleTeam_Demo/view?usp=sharing](https://drive.google.com/file/d/1TEK1314_Kel6_SmartCow_PurpleTeam_Demo/view?usp=sharing)
 * **Dokumentasi & Naskah Narasi:** [`docs/final/README.md`](docs/final/README.md)

@@ -144,40 +144,48 @@ Titik siar RTSP aktif di: `rtsp://192.168.6.20:554/live/cow1` (didistribusikan s
 
 ## 3. Struktur Storyboard & Naskah Narasi (Scene-by-Scene)
 
-### 🎬 Scene 0: Pembukaan & Pembuktian Identitas IP (00:00 – 00:45)
-* **Tampilan Visual:** Tampilkan jendela terminal ketiga mesin virtual berdampingan.
+### 🎬 Scene 0: Pembukaan & Pembuktian Identitas IP (00:00 – 00:30)
+* **Tampilan Visual:** Tiga jendela VM berdampingan dalam satu workspace (kiri: Target `target-kel6`, tengah: Attacker `kali-linux`, kanan: Monitoring `Security Onion` Kibana Discover).
 * **Perintah yang Dijalankan:**
-  * Di Kali Linux: `ip a show eth0`
-  * Di Ubuntu Target: `ip a show enp0s3`
-  * Di Security Onion: `ip a show eth0`
+  * Di Kali Linux: `ip -br a show eth0`
+  * Di Ubuntu Target: `ip -br a show enp0s3`
+  * Di Security Onion: Kibana Discover terbuka dengan filter kueri `192.168.6.10` (`Last 15 minutes`, *auto-refresh* 5 detik).
 * **Naskah Narasi (Voice-Over):**
-  > *"Halo, selamat pagi/siang Bapak/Ibu dosen penguji dan rekan-rekan. Kami dari Kelompok 6 Kelas A mempresentasikan video demonstrasi Purple Team Loop dan penanganan insiden siber pada replika Smart Cow Monitoring System.*  
-  > *Sebagai bukti orisinalitas infrastruktur lab kelompok kami: di sebelah kiri adalah Attacker Node Kali Linux dengan IP 192.168.6.10; di tengah adalah Target Node Ubuntu Server dengan IP 192.168.6.20; dan di kanan adalah Monitoring Node Security Onion dengan IP 192.168.6.30."*
+  > *"Halo, selamat pagi/siang Bapak/Ibu dosen penguji dan rekan-rekan. Kami dari Kelompok 6 Kelas A mempersembahkan video demonstrasi Purple Team Loop pada replika Smart Cow Monitoring System.*  
+  > *Sebagai bukti orisinalitas infrastruktur lab kelompok kami: Attacker Node Kali Linux menggunakan IP 192.168.6.10 (`eth0`), Target Node Ubuntu Server menggunakan IP 192.168.6.20 (`enp0s3`), dan Monitoring Node Security Onion pada 192.168.6.30 menampilkan log secara real-time di Kibana Discover."*
 
 ---
 
-### 🎬 Scene 1: ATK-01 — Port Scanning & Reconnaissance (00:45 – 01:40)
-* **Tampilan Visual:** Terminal Kali Linux $\rightarrow$ Kibana Security Onion $\rightarrow$ Terminal Target Server.
-* **Langkah Demonstrasi:**
-  * Target Server memastikan port 554 terbuka untuk simulasi:
-    * *Metode Manual:* `sudo ufw allow from 192.168.6.10 to any port 554 proto tcp`
-    * *Metode Skrip:* `./loose_target.sh`
-  * Kali Linux menjalankan pemindaian port:
+### 🎬 Scene 1: ATK-01 — Port Scanning, UFW Hardening & RTSP Live Feed (00:30 – 02:50)
+* **Tampilan Visual:** Terminal Target Server $\rightarrow$ Terminal Kali Linux (termasuk jendela `ffplay`) $\rightarrow$ Kibana Discover Security Onion.
+* **Langkah Demonstrasi (Metode Manual):**
+  * Target Server menunjukkan kondisi awal (UFW nonaktif dan layanan streaming aktif):
     ```bash
-    nmap -sV -p 22,80,554 192.168.6.20
+    sudo ufw status
+    systemctl status smartcow-stream --no-pager | head -n 10
     ```
-  * Tunjukkan hasil: port 22, 80, dan 554 berstatus **OPEN**.
-  * Di Security Onion, tunjukkan log koneksi Zeek dan notice deteksi scan.
-  * Terapkan mitigasi hardening di Target (hapus izin port 554):
-    * *Metode Manual:* `sudo ufw delete allow from 192.168.6.10 to any port 554 proto tcp`
-    * *Metode Skrip:* `./harden_target.sh`
-  * Kali Linux mengulang nmap: port 554 kini **FILTERED**.
+  * Kali Linux menjalankan pemindaian port & memutar langsung stream RTSP:
+    ```bash
+    nmap -p 22,80,554 192.168.6.20
+    timeout 12 ffplay -hide_banner -rtsp_transport tcp -autoexit -t 10 rtsp://192.168.6.20:554/live/cow1
+    ```
+  * Tunjukkan hasil: port `22`, `80`, dan `554` berstatus **open**, dan `ffplay` berhasil memutar siaran RTSP (`640x360`, 20 fps).
+  * Terapkan mitigasi hardening di Target dengan mengaktifkan UFW secara manual:
+    ```bash
+    sudo ufw enable
+    sudo ufw status verbose
+    ```
+  * Kali Linux mengulang `nmap` dan `ffplay`:
+    ```bash
+    nmap -p 22,80,554 192.168.6.20
+    timeout 8 ffplay -hide_banner -rtsp_transport tcp -autoexit -t 5 rtsp://192.168.6.20:554/live/cow1
+    ```
+  * Tunjukkan hasil: port `554/tcp` kini **filtered**, `ffplay` gagal terhubung (*timed out*), dan Kibana Discover Security Onion mencatat `[UFW BLOCK]` dari `192.168.6.10`.
 * **Naskah Narasi (Voice-Over):**
-  > *"Skenario pertama, ATK-01: Network Reconnaissance. Penyerang menjalankan pemindaian port Nmap ke Target Node.*  
-  > *(Sebelum mitigasi)*: Seluruh port layanan—port 22 SSH, port 80 Web, dan port 554 RTSP—berstatus OPEN tanpa firewall.*  
-  > *Di Security Onion, Zeek mencatat lonjakan TCP SYN pada conn.log dan memicu alert pemindaian port.*  
-  > *Mitigasi Blue Team: Kami mengaktifkan firewall UFW dengan menyaring akses port 554 khusus untuk IP monitoring.*  
-  > *(Retest)*: Saat Red Team mengulang Nmap setelah mitigasi, port 554 kini berstatus **FILTERED**. Penyerang kehilangan akses pemetaan port streaming."*
+  > *"Skenario pertama, ATK-01: Network Reconnaissance & RTSP Exposure. Pada kondisi awal, firewall UFW masih nonaktif sementara layanan smartcow-stream berjalan.*  
+  > *(Sebelum mitigasi)*: Pemindaian Nmap menunjukkan port 22, 80, dan 554 berstatus OPEN, dan penyerang dapat langsung memutar siaran kamera RTSP menggunakan ffplay.*  
+  > *Mitigasi Blue Team: Kami mengaktifkan firewall UFW dengan `sudo ufw enable` dan memverifikasi aturan aktif lewat `sudo ufw status verbose`.*  
+  > *(Retest)*: Saat Red Team mengulang Nmap, port 554 kini berstatus **filtered**, upaya pemutaran `ffplay` diblokir, dan Security Onion mencatat event `[UFW BLOCK]` dari 192.168.6.10 secara real-time."*
 
 ---
 
@@ -220,46 +228,42 @@ Titik siar RTSP aktif di: `rtsp://192.168.6.20:554/live/cow1` (didistribusikan s
 
 ---
 
-### 🎬 Scene 4: ATK-04 — SSH Password Brute-Force (03:45 – 04:50)
-* **Tampilan Visual:** Terminal Kali Linux $\rightarrow$ Terminal Target Server $\rightarrow$ Kibana Discover rsyslog.
-* **Langkah Demonstrasi:**
+### 🎬 Scene 4: ATK-04 — SSH Password Brute-Force & Hardening Manual (02:50 – 05:01)
+* **Tampilan Visual:** Terminal Target Server (`nano`) $\rightarrow$ Terminal Kali Linux $\rightarrow$ Kibana Discover Security Onion.
+* **Langkah Demonstrasi (Metode Manual):**
   * **Kondisi Sebelum Mitigasi (Loose):**
-    * *Metode Manual di Target:*
+    * Target Server menampilkan konfigurasi SSH saat ini (`PasswordAuthentication yes` & `KbdInteractiveAuthentication yes`):
       ```bash
-      sudo nano /etc/ssh/sshd_config.d/00-hardening.conf
-      # Ubah: PasswordAuthentication yes | KbdInteractiveAuthentication yes
-      sudo systemctl reload ssh
+      cat /etc/ssh/sshd_config.d/00-hardening.conf
       ```
-      *(Atau jalankan `sudo /home/kel6/loose_target.sh`)*
     * *Pengujian Red Team dari Kali:*
       ```bash
       ssh kel6@192.168.6.20
       ```
-      *(Hasil: Muncul prompt `kel6@192.168.6.20's password:` — rentan terhadap brute force)*.
-  * **Penerapan Mitigasi Blue Team (Hardened):**
+      *(Hasil: Muncul prompt `(kel6@192.168.6.20) Password:` — percobaan password gagal `wrongpass1` / `wrongpass2` langsung terekam oleh rsyslog `sshd` di Kibana Discover Security Onion).*
+  * **Penerapan Mitigasi Blue Team (Hardened via `nano`):**
     * *Metode Manual di Target:*
       ```bash
-      sudo nano /etc/ssh/sshd_config.d/00-hardening.conf
-      # Kembalikan: PasswordAuthentication no | KbdInteractiveAuthentication no
+      sudo nano +4 /etc/ssh/sshd_config.d/00-hardening.conf
+      # Ubah baris 4-5: PasswordAuthentication no | KbdInteractiveAuthentication no
+      # Simpan (Ctrl+O, Enter) dan keluar (Ctrl+X)
       sudo systemctl reload ssh
       ```
-      *(Atau jalankan `sudo /home/kel6/harden_target.sh`)*
   * **Retest Red Team:**
     * *Pengujian Ulang dari Kali:*
       ```bash
       ssh kel6@192.168.6.20
       ```
-      *(Hasil: Langsung ditolak `Permission denied (publickey)` tanpa ada prompt password)*.
+      *(Hasil: Langsung ditolak `Permission denied (publickey).` tanpa ada prompt password).*
   * **Verifikasi Status Fail2ban di Target:**
     ```bash
-    fail2ban-client status sshd
+    sudo fail2ban-client status sshd
     ```
 * **Naskah Narasi (Voice-Over):**
   > *"Skenario keempat, ATK-04: SSH Dictionary Attack.*  
-  > *(Sebelum mitigasi)*: Target mengizinkan login berbasis password, sehingga prompt kata sandi muncul dan rentan ditebak secara masif.*  
-  > *Security Onion merekam lonjakan log rsyslog 'Failed password' secara real-time via UDP 514.*  
-  > *Mitigasi Blue Team: Kami menerapkan pertahanan berlapis: mengunci PasswordAuthentication ke 'no', menonaktifkan root login, mewajibkan kunci publik Ed25519, dan mengaktifkan Fail2ban.*  
-  > *(Retest)*: Saat penyerang mencoba login SSH dari Kali, server langsung menolak koneksi pada tahap inisiasi: **Permission denied (publickey)**. Penyerang sama sekali tidak diberi kesempatan menebak kata sandi."*
+  > *(Sebelum mitigasi)*: Konfigurasi `00-hardening.conf` masih mengizinkan `PasswordAuthentication yes`, sehingga prompt kata sandi muncul dan upaya login gagal langsung terekam di Kibana Discover Security Onion.*  
+  > *Mitigasi Blue Team: Kami mengedit langsung `/etc/ssh/sshd_config.d/00-hardening.conf` menggunakan `nano`, mengubah `PasswordAuthentication` dan `KbdInteractiveAuthentication` menjadi `no`, lalu menjalankan `sudo systemctl reload ssh`.*  
+  > *(Retest)*: Saat penyerang mencoba login SSH dari Kali, server langsung menolak koneksi: **Permission denied (publickey)**, dan `sudo fail2ban-client status sshd` mengonfirmasi proteksi jail SSH aktif."*
 
 ---
 
