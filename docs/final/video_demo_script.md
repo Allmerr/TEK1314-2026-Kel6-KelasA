@@ -276,11 +276,16 @@ Titik siar RTSP aktif di: `rtsp://192.168.6.20:554/live/cow1` (didistribusikan s
       sudo ufw allow from 192.168.6.10 to any port 554 proto tcp
       ```
       *(Atau jalankan `sudo /home/kel6/loose_target.sh`)*
-    * *Pengujian Red Team dari Kali:*
+    * *Pengujian Red Team dari Kali (Port Probe & Pemutaran Live Feed):*
       ```bash
+      # 1. Cek keterbukaan port RTSP:
       nc -zv 192.168.6.20 554
+      # 2. Putar langsung live video feed di jendela GUI (ffplay):
+      ffplay -rtsp_transport tcp -autoexit -t 5 rtsp://192.168.6.20:554/live/cow1
+      # (Atau ambil snapshot bukti kebocoran frame CCTV):
+      ffmpeg -y -rtsp_transport tcp -i rtsp://192.168.6.20:554/live/cow1 -vframes 1 /tmp/cctv_leaked.jpg
       ```
-      *(Hasil: `Connection to 192.168.6.20 554 port [tcp/rtsp] succeeded!`)*
+      *(Hasil: Port 554 `open` dan jendela pemutar video menampilkan siaran video CCTV kandang sapi secara real-time!)*
   * **Penerapan Mitigasi Blue Team (Hardened):**
     * *Metode Manual di Target:*
       ```bash
@@ -290,9 +295,11 @@ Titik siar RTSP aktif di: `rtsp://192.168.6.20:554/live/cow1` (didistribusikan s
   * **Retest Red Team:**
     * *Pengujian Ulang dari Kali:*
       ```bash
+      # Uji ulang koneksi port dan pemutaran video:
       nc -zv -w 3 192.168.6.20 554
+      ffplay -rtsp_transport tcp -autoexit -t 3 rtsp://192.168.6.20:554/live/cow1
       ```
-      *(Hasil: `Connection timed out` — paket koneksi di-drop oleh firewall UFW)*.
+      *(Hasil: `Connection timed out` — paket koneksi di-drop oleh firewall UFW, pemutaran video feed gagal total!)*.
 * **Naskah Narasi (Voice-Over):**
   > *"Skenario kelima, ATK-05: Unauthorized Video Feed Interception.*  
   > *(Sebelum mitigasi)*: Port RTSP 554 terbuka sehingga feed video kamera kandang sapi dapat disedot secara ilegal dari jaringan penyerang.*  
@@ -400,10 +407,16 @@ for i in {1..12}; do curl -s -o /dev/null -w "Percobaan $i: HTTP %{http_code}\n"
 # Setelah mitigasi: Permission denied (publickey)
 ssh kel6@192.168.6.20
 
-# === 6. Pengujian ATK-05 (RTSP Video Streaming Access) ===
-# Sebelum mitigasi: open
-# Setelah mitigasi: Connection timed out
+# === 6. Pengujian ATK-05 (RTSP Video Streaming Access & Live Playback) ===
+# Sebelum mitigasi: open & video live memutar feed CCTV di jendela Kali
+nc -zv 192.168.6.20 554
+ffplay -rtsp_transport tcp -autoexit -t 5 rtsp://192.168.6.20:554/live/cow1
+# (Atau snapshot bukti ke file gambar):
+ffmpeg -y -rtsp_transport tcp -i rtsp://192.168.6.20:554/live/cow1 -vframes 1 /tmp/cctv_leaked.jpg
+
+# Setelah mitigasi: Connection timed out (drop paket UFW)
 nc -zv -w 3 192.168.6.20 554
+ffplay -rtsp_transport tcp -autoexit -t 3 rtsp://192.168.6.20:554/live/cow1
 ```
 
 ---
