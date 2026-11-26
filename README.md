@@ -113,17 +113,6 @@ Sesuai ketentuan, video demonstrasi empiris berdurasi 5 menit 01 detik menunjukk
 
 ---
 
-## 💡 Rekomendasi Lanjutan untuk Sistem IoT Lapangan (Mitra Peternak)
-
-Berdasarkan pembelajaran sepanjang siklus proyek, tim merekomendasikan 5 kontrol strategis bagi implementasi kandang sapi fisik di lapangan:
-1. **Enkripsi Transport Wajib (TLS & RTSPS):** Mengaktifkan HTTPS (port 443) pada dashboard peternak dan RTSPS (port 322) untuk siaran kamera guna mencegah penyadapan *man-in-the-middle*.
-2. **Mutual Authentication (mTLS) Sensor ESP32:** Mengharuskan mikrokontroler sensor menggunakan sertifikat asimetris dua arah agar data telemetri palsu tidak dapat diinjeksikan.
-3. **Zero-Trust Access via Private VPN:** Tidak membuka port manajemen SSH langsung ke internet; teknisi wajib melalui terowongan VPN terenkripsi (WireGuard) dengan MFA.
-4. **Enkripsi Storage Lokal (Data-at-Rest):** Mengamankan database SQLite pada gateway fisik menggunakan LUKS atau SQLCipher untuk mencegah pencurian data saat perangkat dicuri fisik dari kandang.
-5. **Firmware Integrity & Secure Boot:** Mengunci bootloader perangkat IoT hanya menjalankan firmware resmi bertanda tangan digital.
-
----
-
 ## 📄 Tautan Cepat Berkas Deliverables Final
 
 * 📑 **Laporan Insiden Final (NIST SP 800-61r2 PDF):** [`docs/final/incident_report.pdf`](docs/final/incident_report.pdf)

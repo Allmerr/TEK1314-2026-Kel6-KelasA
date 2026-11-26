@@ -195,24 +195,7 @@
 
 ---
 
-## Slide 11: Rekomendasi Lanjutan untuk Sistem IoT Nyata (Mitra)
-
-### Rencana Peningkatan Keamanan untuk Implementasi di Peternakan Sapi
-1. **Wajib Enkripsi Transport Layer (TLS & RTSPS):**
-   * Mengamankan dashboard peternak menggunakan HTTPS (Port 443) dengan sertifikat TLS valid.
-   * Mengenkripsi transmisi feed video kamera kandang via RTSPS (Port 322) mencegah intersepsi di jaringan lokal.
-2. **Mutual Authentication (mTLS) pada Sensor ESP32:**
-   * Memvalidasi keaslian perangkat sensor IoT pengirim telemetri suhu/kelembapan melalui sertifikat digital dua arah.
-3. **Zero-Trust Remote Access / Dedicated VPN:**
-   * Mengisolasi seluruh akses administrasi teknisi di balik jaringan VPN privat (WireGuard / OpenVPN) dengan autentikasi multi-faktor (MFA), tanpa mengekspos port SSH ke internet.
-4. **Enkripsi Penyimpanan Edge (Data at-Rest):**
-   * Menerapkan enkripsi disk penuh (LUKS) atau SQLCipher pada berkas database SQLite untuk memitigasi risiko pencurian fisik perangkat gateway di kandang terbuka.
-5. **Firmware Integrity & Automated Patch Management:**
-   * Mengaktifkan *Secure Boot* pada mikrokontroler dan pembaruan keamanan otomatis pada sistem operasi edge gateway.
-
----
-
-## Slide 12: Penutup & Tautan Artefak GitHub
+## Slide 11: Penutup & Tautan Artefak GitHub
 
 ### Kesimpulan Akhir
 Proyek PBL Keamanan Siber Kelompok 6 berhasil merancang infrastruktur replika yang realistis, menguji ketahanan sistem melalui simulasi serangan terukur, mendeteksi insiden menggunakan SIEM Security Onion, dan menerapkan kontrol mitigasi berlapis dengan tingkat keberhasilan verifikasi **100% Pass**.

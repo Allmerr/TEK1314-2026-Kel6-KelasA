@@ -264,15 +264,6 @@ Sesuai Tahap 5 Purple Team Loop, Red Team mengulangi seluruh serangan menggunaka
 2. **Prinsip Default Deny:** Membiarkan konfigurasi jaringan default tanpa firewall adalah risiko terbesar pada perangkat IoT. Penerapan aturan *whitelist* spesifik terbukti efektif mematikan 80% vektor pengintaian Red Team.
 3. **Pemisahan Peran Red vs Blue:** Kolaborasi Purple Team memungkinkan iterasi cepat; setiap celah yang ditemukan penyerang dapat segera diformulasikan solusinya oleh defender dalam siklus yang terukur.
 
-### 7.2 Rekomendasi Lanjutan untuk Sistem IoT Nyata (Mitra)
-Di luar lingkup simulasi replika praktikum, tim merekomendasikan langkah penguatan strategis berikut untuk sistem Smart Cow fisik di lapangan:
-
-1. **Enkripsi Transport Layer (TLS/HTTPS Obligatory):** Menerapkan sertifikat TLS pada dashboard web (port 443) dan enkripsi stream video (RTSP over TLS / RTSPS port 322) guna mencegah intersepsi data man-in-the-middle di jaringan kandang.
-2. **Mutual Authentication (mTLS) pada Sensor ESP32:** Mikrokontroler pengirim data suhu dan kelembapan wajib menggunakan autentikasi sertifikat dua arah atau token API berotasi sebelum data diterima oleh gateway backend.
-3. **Zero-Trust Network Access (ZTNA) / VPN Terisolasi:** Gateway kandang sebaiknya tidak mengekspos port administrasi ke jaringan publik. Akses remote teknisi wajib melalui *tunnel* VPN terenkripsi (misalnya WireGuard) dengan autentikasi multi-faktor (MFA).
-4. **Enkripsi Data At-Rest:** Berkas basis data SQLite pada perangkat gateway di kandang perlu dienkripsi pada level filesystem (misalnya menggunakan LUKS atau SQLCipher) untuk memitigasi risiko pencurian fisik perangkat edge.
-5. **Secure Boot & Firmware Integrity Monitoring:** Mengaktifkan verifikasi penandatanganan kriptografis pada firmware ESP32 dan verifikasi integritas berkas sistem operasi gateway secara berkala.
-
 ---
 
 ## 8. Lampiran & Tautan Artefak GitHub
