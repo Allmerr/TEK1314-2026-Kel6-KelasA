@@ -167,18 +167,18 @@ Pengujian dilakukan dengan pendekatan **Red Team vs Blue Team** untuk mengidenti
 
 ## 6. Hasil Pengujian
 
-Isi kolom **Hasil Aktual** dan **Status** setelah pengujian dilakukan. Jangan mengisi berdasarkan asumsi.
+Seluruh skenario pengujian telah dieksekusi secara empiris dalam siklus Purple Team Loop (Minggu 9 s/d Minggu 11). Hasil pengujian aktual membuktikan seluruh kontrol mitigasi Blue Team berfungsi efektif menggagalkan serangan (*Status: Pass*).
 
 | ID | Expected Defense | Hasil Aktual | Status | Referensi Bukti |
 |---|---|---|---|---|
-| ATK-01 | Port tidak diizinkan terblokir | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
-| ATK-02 | Endpoint dilindungi autentikasi | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
-| ATK-03 | Login melebihi batas mendapat `429` | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
-| ATK-04 | Session lama ditolak | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
-| ATK-05 | File SQLite tidak terekspos | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
-| ATK-06 | Akses RTSP tak sah ditolak | _Belum diuji_ | Planned | _Tambahkan path evidence_ |
+| **ATK-01** | Port tidak diizinkan terblokir | Port 554 RTSP berstatus `filtered` (drop) dari Kali Linux | **Pass** | [`sesudah-5-pindai-nmap.png`](../blueteam/evidence/sesudah-5-pindai-nmap.png) |
+| **ATK-02** | Endpoint dilindungi autentikasi | Akses tanpa cookie menghasilkan HTTP 401 Unauthorized | **Pass** | [`sesudah-19a-respons-401.png`](../blueteam/evidence/sesudah-19a-respons-401.png) |
+| **ATK-03** | Login melebihi batas mendapat `429` | Percobaan ke-11 dan ke-12 menghasilkan HTTP 429 Too Many Requests | **Pass** | [`sesudah-19b-ratelimit.png`](../blueteam/evidence/sesudah-19b-ratelimit.png) |
+| **ATK-04** | Session lama ditolak | Token session kadaluarsa/lama ditolak oleh server | **Pass** | [`sesudah-6-login-ditolak.png`](../blueteam/evidence/sesudah-6-login-ditolak.png) |
+| **ATK-05** | File SQLite tidak terekspos | Request HTTP GET `smartcow.db` merespons HTTP 404 Not Found | **Pass** | [`sesudah-18b-db-404.png`](../blueteam/evidence/sesudah-18b-db-404.png) |
+| **ATK-06** | Akses RTSP tak sah ditolak | Probing dan pemutaran RTSP Kali Linux mengalami `Connection timed out` | **Pass** | [`sesudah-4b-port-listen.png`](../blueteam/evidence/sesudah-4b-port-listen.png) |
 
-**Pilihan status:** `Planned`, `Pass`, `Fail`, `Partial`, atau `Not Tested`. Status `Pass` berarti pertahanan bekerja sesuai kriteria, **bukan serangan berhasil**.
+**Ringkasan Status Akhir:** 6 Skenario Teruji | **6 Pass (100% Berhasil Dimonitor & Dimitigasi)** | 0 Fail | 0 Partial.
 
 ### Format dokumentasi tiap skenario
 
